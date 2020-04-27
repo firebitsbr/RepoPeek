@@ -1,6 +1,6 @@
 # RepoPeek - Take a Sneak Peek at Repositories.
 
-RepoPeek is a python script to get details about a repository just from your terminal before cloning it. All the informaton are retrieved using the [GitHub API](http://developer.github.com/v3/repos/). 
+RepoPeek is a python script to get details about a repository just from your terminal before cloning it. All the information are retrieved using the [GitHub API](http://developer.github.com/v3/repos/). 
 
 Please Note: In this script API requests aren't using basic authentication or OAuth. Therefore the rate limit allows for up to 60 requests per hour. Unauthenticated requests are associated with the originating IP address, and not the user making requests. (You can use a VPN to overcome this situation.)
 
@@ -22,8 +22,8 @@ Please Note: In this script API requests aren't using basic authentication or OA
    - Open Issues
    - Total Stars
    
-4. URls of the repository.
-   - GIT URl
+4. URL's of the repository.
+   - GIT URL
    - SSH URL
    - SVN URL
    - Clone URL
