@@ -1,119 +1,90 @@
-from colorama import Fore, Back, Style
-from colorama import init
+import argparse
+import math
+from pathlib import Path
 import requests
-import git
-import re
-import os
+import sys
+from typing import Any, Dict, List
 
-init(autoreset=True)
-
-print(Fore.CYAN +  r'''
+import colorama
+from colorama import Fore, Back, Style
 
 
-__________                    __________               __    
-\______   \ ____ ______   ____\______   \ ____   ____ |  | __
- |       _// __ \\____ \ /  _ \|     ___// __ \_/ __ \|  |/ /
- |    |   \  ___/|  |_> >  <_> )    |   \  ___/\  ___/|    < 
- |____|_  /\___  >   __/ \____/|____|    \___  >\___  >__|_ \
-        \/     \/|__|                        \/     \/     \/
-                                        [by Sameera Madushan]
+parser = argparse.ArgumentParser(
+    description='Provides information about a git repository hosted on '
+                'GitHub without cloning it.')
+parser.add_argument('GitHub_URL', type=str,
+                    help='A GitHub URL for a repo to analyze')
+args = parser.parse_args()
 
-''')
 
-try:
-    get_repo = input("Enter the repository URL: ")
+colorama.init(autoreset=True)
 
-    x = re.match(r'^(https:|)[/][/]([^/]+[.])*github.com', get_repo)
 
-    if x:
-        # got this from https://serverfault.com/a/917253
-        extract  = re.match(r'^(https|git)(:\/\/|@)([^\/:]+)[\/:]([^\/:]+)\/(.+)(.git)?$', get_repo)
-        organization = extract.group(4)
-        repo = extract.group(5).strip(".git")
+def num_bytes_to_size_str(size_bytes: int) -> str:
+   if size_bytes == 0:
+       return "0 B"
+   size_name = ("B", "KiB", "MiB", "GiB", "TiB")
+   x = int(math.floor(math.log(size_bytes, 1024)))
+   return f"{round(size_bytes / (1024 ** x), 2)} {size_name[x]}"
 
-        url = 'https://api.github.com/repos/{0}/{1}'.format(organization, repo)
-        check_exist = requests.get(url).json()
-        
-        for i,v in check_exist.items():
-            if v == 'Not Found':
-                print(Fore.RED + "Oops!! Repository not found. ")
-                print(Style.RESET_ALL)
-                quit()
-            else:
-                pass
 
-        repo_name = check_exist['name']
-        description = check_exist['description']
-        forks = check_exist['forks']
-        open_issues = check_exist['open_issues']
-        watchers = check_exist['watchers']
-        default_branch = check_exist['default_branch']
-        git_url = check_exist['git_url']
-        ssh_url = check_exist['ssh_url']
-        clone_url = check_exist['clone_url']
-        svn_url = check_exist['svn_url']
-        repo_size = check_exist['size']
-        stargazers_count = check_exist['stargazers_count']
-        language = check_exist['languages_url']
+def get_languages(language_url: str) -> List[str]:
+    languages = []
+    req = requests.get(language_url).json()
+    for i in req:
+        languages.append(i)
+    return languages
 
-        def license():
-            for k, v in check_exist['license'].items():
-                if k == 'name':
-                    return v
 
-        def languages():
-            list = []
-            req = requests.get(language).json()
-            for i in req:
-                list.append(i)
-            return list
+def get_license(lic: Dict[str, str]) -> str:
+    for k, v in lic.items():
+        if k == 'name':
+            return v
 
-        def convert(size):
-            while True:
-                megabytes = size / 1000
-                if size < 1000:
-                    return str(size) + " KB"
-                if megabytes > 1000:
-                    gigabyte = megabytes / 1000
-                    return str(gigabyte) + " GB"
-                else:
-                    return str(megabytes) + " MB"
-                    
-        
-        print(Fore.YELLOW + "\n[x] Basic information about the repository [x]")
-        print(Fore.YELLOW + "-----------------------------------------------")
-        print("Repository Name: " + repo_name)
-        print("Default Branch: " + default_branch)
-        print("Repository Size: " + convert(size=repo_size))
-        print("Repository License: " + license())
-        print("Repository Description: " + description)
 
-        print(Fore.YELLOW + "\n[x] Languages used in the repository [x]")
-        print(Fore.YELLOW + "-----------------------------------------------")
-        print(*languages(), sep=', ')
+def print_info(repo_info: Dict[str, Any]) -> None:
+    print(Fore.YELLOW + "\nBasic information about the repository")
+    print(Fore.YELLOW + "--------------------------------------")
+    print(f"Repository Name: {repo_info['name']}")
+    print(f"Default Branch: {repo_info['default_branch']}")
+    print(f"Repository Size: {num_bytes_to_size_str(repo_info['size']//1024)}")
+    print(f"Repository License: {get_license(repo_info['license'])}")
+    print(f"Repository Description: {repo_info['description']}")
 
-        print(Fore.YELLOW + "\n[x] Repository Statistics [x]")
-        print(Fore.YELLOW + "-----------------------------------------------")
-        print("Forks: " + str(forks))
-        print("Watchers: " + str(watchers))
-        print("Open Issues: " + str(open_issues))
-        print("Total Stars: " + str(stargazers_count))
+    print(Fore.YELLOW + "\nLanguages used in the repository")
+    print(Fore.YELLOW + "--------------------------------")
+    print(*get_languages(repo_info['languages_url']), sep=', ')
 
-        print(Fore.YELLOW + "\n[x] URls of the repository [x]")
-        print(Fore.YELLOW + "-----------------------------------------------")
-        print("GIT URl: " + Fore.BLUE + git_url)
-        print("SSH URL: " + Fore.BLUE + ssh_url)
-        print("SVN URL: " + Fore.BLUE + svn_url)
-        print("Clone URL: " + Fore.BLUE + clone_url)
+    print(Fore.YELLOW + "\nRepository Statistics")
+    print(Fore.YELLOW + "---------------------")
+    print(f"Forks: {repo_info['forks']}")
+    print(f"Watchers: {repo_info['watchers']}")
+    print(f"Open Issues: {repo_info['open_issues']}")
+    print(f"Total Stars: {repo_info['stargazers_count']}")
 
-        user_input = input("\nWould you like to clone this repository (y/n): ").lower()
-        if user_input == 'y':
-            print("Cloning...")
-            git.Git(os.getcwd()).clone(get_repo)
-            print("Done.")
-        else:
-            quit()
-    else:
-        print("Error")
-except KeyboardInterrupt:
-    print("\nKeyboard Interrupted")
+    print(Fore.YELLOW + "\nURLs of the repository")
+    print(Fore.YELLOW + "----------------------")
+    print("GIT:   " + Fore.BLUE + repo_info['git_url'])
+    print("SSH:   " + Fore.BLUE + repo_info['ssh_url'])
+    print("SVN:   " + Fore.BLUE + repo_info['svn_url'])
+    print("Clone: " + Fore.BLUE + repo_info['clone_url'])
+
+
+def main(args: argparse.Namespace) -> None:
+    path = Path(args.GitHub_URL)
+    org = path.parts[-2]
+    repo_name = path.stem
+    url = f'https://api.github.com/repos/{org}/{repo_name}'
+    repo_info = requests.get(url).json()
+    
+    for i, v in repo_info.items():
+        if v == 'Not Found':
+            print(Fore.RED + "Error: Repository not found.", file=sys.stderr)
+            exit(1)
+
+    print_info(repo_info)
+    exit(0)
+
+
+if __name__ == '__main__':
+    main(args)
