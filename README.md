@@ -1,12 +1,16 @@
-# RepoPeek - Take a Sneak Peek at Repositories.
+# RepoPeek - Take a Sneak Peek at Repositories
 
-RepoPeek is a python script to get details about a repository just from your terminal before cloning it. All the information are retrieved using the [GitHub API](http://developer.github.com/v3/repos/). 
+RepoPeek is a Python script to get details about a repository without cloning
+it. All the information are retrieved using the
+[GitHub API](http://developer.github.com/v3/repos/).
 
-Please Note: In this script API requests aren't using basic authentication or OAuth. Therefore the rate limit allows for up to 60 requests per hour. Unauthenticated requests are associated with the originating IP address, and not the user making requests. (You can use a VPN to overcome this situation.)
+Note: API requests made by this module aren't using basic authentication or
+OAuth. Therefore the rate limit allows for up to 60 requests per hour.
+Unauthenticated requests are associated with the originating IP address.
 
-![iaa1](https://user-images.githubusercontent.com/55880211/80363200-7d35a000-88a1-11ea-8afe-0e3f688eb180.gif)
 
-## Features
+## Info Provided
+
 1. Basic information about the repository.
    - Repository Name
    - Default Branch
@@ -21,36 +25,34 @@ Please Note: In this script API requests aren't using basic authentication or OA
    - Watchers
    - Open Issues
    - Total Stars
-   
+
 4. URL's of the repository.
    - GIT URL
    - SSH URL
    - SVN URL
    - Clone URL
-   
-5. Cloning repositories.
 
-### Git Installation
-```
-# clone the repo
-$ git clone https://github.com/sameera-madushan/RepoPeek.git
 
-# change the working directory to RepoPeek
-$ cd RepoPeek
+## Installation
 
-# install the requirements
-$ pip3 install -r requirements.txt
-```
+To install this script so that it is accessible via Python from anywhere, copy
+the script into a directory of your choice, and then add that directory to your
+`PYTHONPATH`
+
 
 ## Usage
 
 ```
-python repopeek.py
+python -m repopeek
 ```
 
+
 ### Support & Contributions
+
 - Please ⭐️ this repository if this project helped you!
 - Contributions of any kind welcome!
 
+
 ## License
+
 MIT ©[sameera-madushan](https://github.com/sameera-madushan)
