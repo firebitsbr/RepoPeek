@@ -20,12 +20,10 @@ args = parser.parse_args()
 colorama.init(autoreset=True)
 
 
-def num_bytes_to_size_str(size_bytes: int) -> str:
-   if size_bytes == 0:
-       return "0 B"
-   size_name = ("B", "KiB", "MiB", "GiB", "TiB")
-   x = int(math.floor(math.log(size_bytes, 1024)))
-   return f"{round(size_bytes / (1024 ** x), 2)} {size_name[x]}"
+def num_kilobytes_to_size_str(size_bytes: int) -> str:
+    size_name = ("KiB", "MiB", "GiB", "TiB")
+    x = int(math.floor(math.log(size_bytes, 1024)))
+    return f"{size_bytes / (1024 ** x):.2f} {size_name[x]}"
 
 
 def get_languages(language_url: str) -> List[str]:
@@ -47,7 +45,7 @@ def print_info(repo_info: Dict[str, Any]) -> None:
     print(Fore.YELLOW + "--------------------------------------")
     print(f"Repository Name: {repo_info['name']}")
     print(f"Default Branch: {repo_info['default_branch']}")
-    print(f"Repository Size: {num_bytes_to_size_str(repo_info['size']//1024)}")
+    print(f"Repository Size: {num_kilobytes_to_size_str(repo_info['size'])}")
     print(f"Repository License: {get_license(repo_info['license'])}")
     print(f"Repository Description: {repo_info['description']}")
 
