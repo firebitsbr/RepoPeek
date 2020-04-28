@@ -3,12 +3,22 @@
 import argparse
 import math
 from pathlib import Path
-import requests
 import sys
 from typing import Any, Dict, List
 
-import colorama
-from colorama import Fore, Back, Style
+import requests
+
+try:
+    from colorama import init as colorama_init
+    from colorama import Fore, Back, Style
+except ImportError:
+    class ColoramaShim:
+        def __getattribute__(self, key):
+            return ''
+
+    Fore = Back = Style = ColoramaShim()
+else:
+    colorama_init(autoreset=True)
 
 
 parser = argparse.ArgumentParser(
@@ -17,9 +27,6 @@ parser = argparse.ArgumentParser(
 parser.add_argument('GitHub_URL', type=str,
                     help='A GitHub URL for a repo to analyze')
 args = parser.parse_args()
-
-
-colorama.init(autoreset=True)
 
 
 def num_kilobytes_to_size_str(size_bytes: int) -> str:
@@ -43,7 +50,7 @@ def get_license(lic: Dict[str, str]) -> str:
 
 
 def print_info(repo_info: Dict[str, Any]) -> None:
-    print(Fore.YELLOW + "\nBasic information about the repository")
+    print(Fore.YELLOW + "Basic information about the repository")
     print(Fore.YELLOW + "--------------------------------------")
     print(f"Repository Name: {repo_info['name']}")
     print(f"Default Branch: {repo_info['default_branch']}")
