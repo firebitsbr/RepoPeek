@@ -4,10 +4,11 @@ RepoPeek is a Python script to get details about a repository without cloning
 it. All the information are retrieved using the
 [GitHub API](http://developer.github.com/v3/repos/).
 
-Note: API requests made by this module aren't using basic authentication or
+Please Note: API requests made by this module aren't using basic authentication or
 OAuth. Therefore the rate limit allows for up to 60 requests per hour.
 Unauthenticated requests are associated with the originating IP address.
 
+![iaa1](https://user-images.githubusercontent.com/55880211/80460274-3bfcc900-8951-11ea-9814-66779d8f8f4f.gif)
 
 ## Info Provided
 
