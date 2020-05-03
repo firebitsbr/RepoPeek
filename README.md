@@ -10,7 +10,7 @@ Unauthenticated requests are associated with the originating IP address.
 
 ![iaa1](https://user-images.githubusercontent.com/55880211/80460274-3bfcc900-8951-11ea-9814-66779d8f8f4f.gif)
 
-## Info Provided
+## Information Provided
 
 1. Basic information about the repository.
    - Repository Name
@@ -33,13 +33,11 @@ Unauthenticated requests are associated with the originating IP address.
    - SVN URL
    - Clone URL
 
-
 ## Installation
 
 To install this script so that it is accessible via Python from anywhere, copy
 the script into a directory of your choice, and then add that directory to your
 `PYTHONPATH`
-
 
 ## Usage
 
@@ -47,12 +45,10 @@ the script into a directory of your choice, and then add that directory to your
 python -m repopeek
 ```
 
-
-### Support & Contributions
+## Support & Contributions
 
 - Please ⭐️ this repository if this project helped you!
 - Contributions of any kind welcome!
-
 
 ## License
 
