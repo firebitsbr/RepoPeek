@@ -18,6 +18,7 @@ Unauthenticated requests are associated with the originating IP address.
    - Repository Size
    - Repository License
    - Repository Description
+   - Repository Type
 
 2. Languages used in the repository.
 
