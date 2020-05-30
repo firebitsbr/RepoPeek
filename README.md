@@ -32,6 +32,10 @@ Unauthenticated requests are associated with the originating IP address.
    - SSH URL
    - SVN URL
    - Clone URL
+   
+5. Commit details of the repository
+   - Last Commit Date
+   - Last Commit Message
 
 ## Installation
 
