@@ -48,6 +48,34 @@ def get_license(lic: Dict[str, str]) -> str:
         if k == 'name':
             return v
 
+def get_commits(repo_info: Dict[str, Any]) -> None:
+
+    print(Fore.YELLOW + "\nCommit details of the repository")
+    print(Fore.YELLOW + "----------------------")
+
+    url = repo_info['commits_url'][:-6]
+    req = requests.get(url).json()
+
+    sha_list = []
+    for i in req:
+        for k, v in i.items():
+            if k == 'sha':
+                sha_list.append(v)
+    
+    commit = url+ "/" + sha_list[0]
+    
+    req = requests.get(commit).json()
+
+    for k, v in req.items():
+        if k == 'commit':
+            for k,v in v.items():
+                if k == 'message':
+                    print("Last Commit Message: " + v)
+                if k == 'committer':
+                    for k,v in v.items():
+                        if k == 'date':
+                            commit_date = v
+                            print("Last Commit Date: " + commit_date)
 
 def print_info(repo_info: Dict[str, Any]) -> None:
     print(Fore.YELLOW + "Basic information about the repository")
@@ -57,6 +85,7 @@ def print_info(repo_info: Dict[str, Any]) -> None:
     print(f"Repository Size: {num_kilobytes_to_size_str(repo_info['size'])}")
     print(f"Repository License: {get_license(repo_info['license'])}")
     print(f"Repository Description: {repo_info['description']}")
+    print(f"Repository Type: Fork" if repo_info['fork'] else "Repository Type: Source")
 
     print(Fore.YELLOW + "\nLanguages used in the repository")
     print(Fore.YELLOW + "--------------------------------")
@@ -76,7 +105,6 @@ def print_info(repo_info: Dict[str, Any]) -> None:
     print("SVN:   " + Fore.BLUE + repo_info['svn_url'])
     print("Clone: " + Fore.BLUE + repo_info['clone_url'])
 
-
 def main(args: argparse.Namespace) -> None:
     path = Path(args.GitHub_URL)
     org = path.parts[-2]
@@ -90,8 +118,8 @@ def main(args: argparse.Namespace) -> None:
             exit(1)
 
     print_info(repo_info)
+    get_commits(repo_info)
     exit(0)
-
 
 if __name__ == '__main__':
     main(args)
