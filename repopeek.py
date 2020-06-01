@@ -74,8 +74,8 @@ def get_commits(repo_info: Dict[str, Any]) -> None:
                 if k == 'committer':
                     for k,v in v.items():
                         if k == 'date':
-                            commit_date = v
-                            print("Last Commit Date: " + commit_date)
+                            commit_date = v.split('T')
+                            print("Last Commit Date and Time: " + "On " + commit_date[0] + " at " + commit_date[1].replace("Z", " (UTC)"))
 
 def print_info(repo_info: Dict[str, Any]) -> None:
     print(Fore.YELLOW + "Basic information about the repository")
@@ -84,8 +84,8 @@ def print_info(repo_info: Dict[str, Any]) -> None:
     print(f"Default Branch: {repo_info['default_branch']}")
     print(f"Repository Size: {num_kilobytes_to_size_str(repo_info['size'])}")
     print(f"Repository License: {get_license(repo_info['license'])}")
-    print(f"Repository Description: {repo_info['description']}")
     print(f"Repository Type: Fork" if repo_info['fork'] else "Repository Type: Source")
+    print(f"Repository Description: {repo_info['description']}")
 
     print(Fore.YELLOW + "\nLanguages used in the repository")
     print(Fore.YELLOW + "--------------------------------")
@@ -122,4 +122,8 @@ def main(args: argparse.Namespace) -> None:
     exit(0)
 
 if __name__ == '__main__':
-    main(args)
+    try:
+        main(args)
+    except KeyboardInterrupt:
+        print("Keyboard Interupted")
+        quit()
